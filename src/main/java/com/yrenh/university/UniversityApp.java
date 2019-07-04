@@ -16,6 +16,23 @@ import com.yrenh.university.processor.DepartmentStatisticProcessor;
 import com.yrenh.university.processor.LectorGlobalSearch;
 
 public class UniversityApp {
+
+	private static final String EXIT_COMMAND = "exit";
+	private static final String WELCOME = "Welcome!";
+	private static final String ANSWER = "Answer: ";
+	private static final String TRY_AGAIN = "Try again:";
+	private static final String ALLOWED_COMMANDS_MSG = "Allowable command:\n" +
+		"1. \"Who is head of department {department_name}\"\n" +
+		"2. \"Show {department_name} statistic\"\n" +
+		"3. \"Show the average salary for department {department_name}\"\n" +
+		"4. \"Show count of employee for {department_name}\"\n" +
+		"5. \"Global search by {template}\"\n" +
+		"6. \"" + EXIT_COMMAND + "\"\n" +
+		"Please, enter your command:";
+	private static final String WRONG_COMMAND = "Wrong command!";
+	private static final String GOODBYE = "Goodbye!";
+	private static final int SUCCESSFUL_EXIT_STATUS = 0;
+
 	private Scanner commandLine;
 	private ApplicationContext context;
 	private List<CommandProcessor> commandProcessors;
@@ -31,38 +48,28 @@ public class UniversityApp {
 	}
 
 	public void start() {
-		System.out.println("Welcome!");
-		printAllowedCommand();
+		System.out.println(WELCOME);
+		System.out.println(ALLOWED_COMMANDS_MSG);
 		while(true) {
 			String command = commandLine.nextLine();
 			String answer = processCommand(command);
-			System.out.println("Answer: " + answer);
-			System.out.println("Try again:");
+			System.out.println(ANSWER + answer);
+			System.out.println(TRY_AGAIN);
 		}
 	}
 
-	private void printAllowedCommand() {
-		System.out.println("Allowable command:");
-		System.out.println("1. \"Who is head of department {department_name}\"");
-		System.out.println("2. \"Show {department_name} statistic\"");
-		System.out.println("3. \"Show the average salary for department {department_name}\"");
-		System.out.println("4. \"Show count of employee for {department_name}\"");
-		System.out.println("5. \"Global search by {template}\"");
-		System.out.println("6. \"exit\"");
-		System.out.println("Please, enter your command:");
-	}
-
 	private String processCommand(String command) {
-		String answer = "Wrong command!";
+		String answer = WRONG_COMMAND;
 
-		if("exit".equals(command)) {
-			System.out.println("Goodbye!");
-			System.exit(0);
+		if(EXIT_COMMAND.equals(command)) {
+			System.out.println(GOODBYE);
+			System.exit(SUCCESSFUL_EXIT_STATUS);
 		}
 
 		for(CommandProcessor commandProcessor: commandProcessors) {
 			if(commandProcessor.acceptableCommand(command)) {
 				answer = commandProcessor.process(command);
+				break;
 			}
 		}
 		return answer;
