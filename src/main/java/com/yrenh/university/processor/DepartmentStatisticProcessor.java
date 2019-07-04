@@ -15,6 +15,12 @@ public class DepartmentStatisticProcessor implements CommandProcessor {
 
 	private static final Pattern pattern = Pattern.compile("^Show .+ statistic$");
 	private static final String DEPARTMENT_DOES_NOT_EXIST_MESSAGE = "Department '%s' does not exist.";
+	private static final String SUBSTRING_AFTER_DEPARTMENT_NAME_IN_CMD = " statistic";
+	private static final int INDEX_OF_DEPARTMENT_NANE_IN_CMD = 5;
+	private static final String SUCCESS_ANSWER = "assistans - %d.\n" +
+												"associate professors - %d\n" +
+												"professors - %d";
+
 	private DepartmentRepository departmentRepository;
 	private LectorRepository lectorRepository;
 
@@ -31,15 +37,13 @@ public class DepartmentStatisticProcessor implements CommandProcessor {
 	@Override
 	public String process(String command) {
 		String answer;
-		String departmentName = command.substring(5, command.lastIndexOf(" statistic"));
+		String departmentName = command.substring(INDEX_OF_DEPARTMENT_NANE_IN_CMD, command.lastIndexOf(SUBSTRING_AFTER_DEPARTMENT_NAME_IN_CMD));
 		Optional<Department> department = departmentRepository.findByName(departmentName);
 		if(department.isPresent()) {
 			int assistentsCount = lectorRepository.findByDepartmentsAndDegree(department.get(), Degree.ASSISTANT).size();
 			int associateProfessorsCount = lectorRepository.findByDepartmentsAndDegree(department.get(), Degree.ASSOCIATE_PROFESSOR).size();
 			int professorsCount = lectorRepository.findByDepartmentsAndDegree(department.get(), Degree.PROFESSOR).size();
-			answer = String.format("assistans - %d.\n" +
-					"associate professors - %d\n" +
-					"professors - %d", assistentsCount, associateProfessorsCount, professorsCount);
+			answer = String.format(SUCCESS_ANSWER, assistentsCount, associateProfessorsCount, professorsCount);
 		} else {
 			answer = String.format(DEPARTMENT_DOES_NOT_EXIST_MESSAGE, departmentName);
 		}

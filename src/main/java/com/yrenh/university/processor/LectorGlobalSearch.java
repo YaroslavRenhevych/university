@@ -13,6 +13,9 @@ import com.yrenh.university.repository.LectorRepository;
 public class LectorGlobalSearch implements CommandProcessor {
 
 	private static final Pattern pattern = Pattern.compile("^Global search by .+");
+	private static final String LECTORS_NOT_FOUND = "Lectors not found!";
+	private static final int INDEX_OF_SEARCH_STRING = 17;
+
 	private LectorRepository lectorRepository;
 
 	@Autowired
@@ -28,10 +31,10 @@ public class LectorGlobalSearch implements CommandProcessor {
 	@Override
 	public String process(String command) {
 		StringBuilder answer = new StringBuilder();
-		String searchText = command.substring(17);
+		String searchText = command.substring(INDEX_OF_SEARCH_STRING);
 		List<Lector> lectors = lectorRepository.findByFirstNameContainingOrLastNameContaining(searchText, searchText);
 		if(lectors.isEmpty()) {
-			answer = answer.append("Lectors not found!");
+			answer = answer.append(LECTORS_NOT_FOUND);
 		} else {
 			for(Lector lector: lectors) {
 				answer.append(lector.getFirstName())
