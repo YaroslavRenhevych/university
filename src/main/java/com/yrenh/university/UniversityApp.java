@@ -63,6 +63,7 @@ public class UniversityApp {
 		for(CommandProcessor commandProcessor: commandProcessors) {
 			if(commandProcessor.acceptableCommand(command)) {
 				answer = commandProcessor.process(command);
+				break;
 			}
 		}
 		return answer;
